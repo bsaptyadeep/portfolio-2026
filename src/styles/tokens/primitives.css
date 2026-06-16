@@ -1,0 +1,50 @@
+/**
+ * Primitive palette — raw values, theme-agnostic.
+ * Semantic tokens in semantic-light/dark.css reference these.
+ */
+:root {
+  /* Neutral */
+  --primitive-neutral-0: #ffffff;
+  --primitive-neutral-50: #f8fafc;
+  --primitive-neutral-100: #f1f5f9;
+  --primitive-neutral-200: #e2e8f0;
+  --primitive-neutral-300: #cbd5e1;
+  --primitive-neutral-400: #94a3b8;
+  --primitive-neutral-500: #64748b;
+  --primitive-neutral-600: #475569;
+  --primitive-neutral-700: #334155;
+  --primitive-neutral-800: #1e293b;
+  --primitive-neutral-900: #0f172a;
+  --primitive-neutral-950: #030712;
+
+  /* Brand — indigo */
+  --primitive-indigo-50: #eef2ff;
+  --primitive-indigo-100: #e0e7ff;
+  --primitive-indigo-200: #c7d2fe;
+  --primitive-indigo-300: #a5b4fc;
+  --primitive-indigo-400: #818cf8;
+  --primitive-indigo-500: #6366f1;
+  --primitive-indigo-600: #4f46e5;
+  --primitive-indigo-700: #4338ca;
+  --primitive-indigo-800: #3730a3;
+  --primitive-indigo-900: #312e81;
+  --primitive-indigo-950: #1e1b4b;
+
+  /* Accent — violet */
+  --primitive-violet-500: #8b5cf6;
+
+  /* Accent — cyan */
+  --primitive-cyan-500: #06b6d4;
+
+  /* Status */
+  --primitive-red-400: #f87171;
+  --primitive-red-500: #ef4444;
+  --primitive-red-600: #dc2626;
+  --primitive-emerald-400: #34d399;
+  --primitive-emerald-500: #10b981;
+  --primitive-emerald-600: #059669;
+  --primitive-amber-400: #fbbf24;
+  --primitive-amber-500: #f59e0b;
+  --primitive-sky-400: #38bdf8;
+  --primitive-sky-500: #0ea5e9;
+}

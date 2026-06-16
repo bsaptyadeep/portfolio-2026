@@ -1,0 +1,54 @@
+/**
+ * Semantic tokens — dark theme.
+ * Applied when next-themes adds .dark to <html>.
+ */
+.dark {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --background: var(--primitive-neutral-950);
+  --foreground: var(--primitive-neutral-50);
+  --surface: var(--primitive-neutral-900);
+  --surface-elevated: var(--primitive-neutral-800);
+  --surface-overlay: rgb(0 0 0 / 0.6);
+  --card: var(--primitive-neutral-900);
+  --card-foreground: var(--primitive-neutral-50);
+
+  /* Brand */
+  --primary: var(--primitive-indigo-400);
+  --primary-hover: var(--primitive-indigo-300);
+  --primary-foreground: var(--primitive-neutral-950);
+  --primary-muted: var(--primitive-indigo-950);
+
+  /* Secondary & muted */
+  --secondary: var(--primitive-neutral-800);
+  --secondary-foreground: var(--primitive-neutral-50);
+  --muted: var(--primitive-neutral-800);
+  --muted-foreground: var(--primitive-neutral-400);
+
+  /* Accent */
+  --accent: var(--primitive-indigo-950);
+  --accent-foreground: var(--primitive-indigo-200);
+
+  /* Status */
+  --destructive: var(--primitive-red-400);
+  --destructive-foreground: var(--primitive-neutral-950);
+  --success: var(--primitive-emerald-400);
+  --success-foreground: var(--primitive-neutral-950);
+  --warning: var(--primitive-amber-400);
+  --warning-foreground: var(--primitive-neutral-950);
+  --info: var(--primitive-sky-400);
+  --info-foreground: var(--primitive-neutral-950);
+
+  /* Borders & inputs */
+  --border: var(--primitive-neutral-800);
+  --border-subtle: var(--primitive-neutral-900);
+  --input: var(--primitive-neutral-800);
+  --ring: var(--primitive-indigo-400);
+  --link: var(--primitive-indigo-300);
+  --link-hover: var(--primitive-indigo-200);
+
+  /* Glass */
+  --glass-bg: rgb(15 23 42 / 0.6);
+  --glass-border: rgb(255 255 255 / 0.08);
+}

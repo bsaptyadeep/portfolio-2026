@@ -1,0 +1,64 @@
+/**
+ * Semantic tokens — light theme.
+ * Applied to :root; overridden by .dark in semantic-dark.css.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --background: var(--primitive-neutral-50);
+  --foreground: var(--primitive-neutral-900);
+  --surface: var(--primitive-neutral-0);
+  --surface-elevated: var(--primitive-neutral-0);
+  --surface-overlay: rgb(15 23 42 / 0.4);
+  --card: var(--primitive-neutral-0);
+  --card-foreground: var(--primitive-neutral-900);
+
+  /* Brand */
+  --primary: var(--primitive-indigo-500);
+  --primary-hover: var(--primitive-indigo-600);
+  --primary-foreground: var(--primitive-neutral-0);
+  --primary-muted: var(--primitive-indigo-50);
+
+  /* Secondary & muted */
+  --secondary: var(--primitive-neutral-100);
+  --secondary-foreground: var(--primitive-neutral-800);
+  --muted: var(--primitive-neutral-100);
+  --muted-foreground: var(--primitive-neutral-500);
+
+  /* Accent */
+  --accent: var(--primitive-indigo-100);
+  --accent-foreground: var(--primitive-indigo-800);
+
+  /* Status */
+  --destructive: var(--primitive-red-500);
+  --destructive-foreground: var(--primitive-neutral-0);
+  --success: var(--primitive-emerald-500);
+  --success-foreground: var(--primitive-neutral-0);
+  --warning: var(--primitive-amber-500);
+  --warning-foreground: var(--primitive-neutral-900);
+  --info: var(--primitive-sky-500);
+  --info-foreground: var(--primitive-neutral-0);
+
+  /* Borders & inputs */
+  --border: var(--primitive-neutral-200);
+  --border-subtle: var(--primitive-neutral-100);
+  --input: var(--primitive-neutral-200);
+  --ring: var(--primitive-indigo-500);
+  --link: var(--primitive-indigo-600);
+  --link-hover: var(--primitive-indigo-700);
+
+  /* Glass & gradients */
+  --glass-bg: rgb(255 255 255 / 0.65);
+  --glass-border: rgb(255 255 255 / 0.4);
+  --gradient-start: var(--primitive-indigo-500);
+  --gradient-mid: var(--primitive-violet-500);
+  --gradient-end: var(--primitive-cyan-500);
+
+  /* Chart (data viz) */
+  --chart-1: var(--primitive-indigo-500);
+  --chart-2: var(--primitive-violet-500);
+  --chart-3: var(--primitive-cyan-500);
+  --chart-4: var(--primitive-emerald-500);
+  --chart-5: var(--primitive-amber-500);
+}

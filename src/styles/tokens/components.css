@@ -1,0 +1,56 @@
+/**
+ * Component tokens — sizes and styles for UI primitives.
+ * Components reference these instead of hard-coded values.
+ */
+:root {
+  /* Button */
+  --button-height-sm: 2.25rem;
+  --button-height-md: 2.5rem;
+  --button-height-lg: 3rem;
+  --button-height-icon: 2.5rem;
+  --button-radius: var(--radius-xl);
+  --button-radius-sm: var(--radius-lg);
+  --button-padding-x-sm: var(--space-3);
+  --button-padding-x-md: var(--space-4);
+  --button-padding-x-lg: var(--space-8);
+  --button-font-size: var(--font-size-sm);
+  --button-font-weight: var(--font-weight-medium);
+  --button-shadow: var(--shadow-primary);
+
+  /* Input */
+  --input-height: var(--button-height-md);
+  --input-radius: var(--radius-xl);
+  --input-padding-x: var(--space-3);
+  --input-padding-y: var(--space-2);
+  --input-font-size: var(--font-size-sm);
+  --input-bg: color-mix(in srgb, var(--background) 50%, transparent);
+
+  /* Card */
+  --card-radius: var(--radius-2xl);
+  --card-padding: var(--space-6);
+  --card-padding-sm: var(--space-4);
+  --card-border: color-mix(in srgb, var(--border) 50%, transparent);
+  --card-bg: color-mix(in srgb, var(--card) 60%, transparent);
+  --card-shadow: var(--shadow-sm);
+
+  /* Badge */
+  --badge-radius: var(--radius-full);
+  --badge-padding-x: var(--space-2-5);
+  --badge-padding-y: var(--space-0-5);
+  --badge-font-size: var(--font-size-xs);
+
+  /* Navigation */
+  --nav-height: 4rem;
+  --sidebar-width: 16rem;
+  --sidebar-width-collapsed: 4rem;
+
+  /* Focus */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--ring);
+
+  /* Alert */
+  --alert-radius: var(--radius-xl);
+  --alert-padding-x: var(--space-4);
+  --alert-padding-y: var(--space-3);
+}
