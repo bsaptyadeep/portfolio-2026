@@ -1,3 +1,5 @@
+import { ContactPageContent } from "@/app/(public)/contact/contact-form";
+import { getProfile } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata = createMetadata({
@@ -6,4 +8,8 @@ export const metadata = createMetadata({
   path: "/contact",
 });
 
-export { default } from "./contact-form";
+export default async function ContactPage() {
+  const profile = await getProfile();
+
+  return <ContactPageContent email={profile.email} location={profile.location} />;
+}

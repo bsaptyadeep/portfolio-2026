@@ -17,7 +17,12 @@ type ContactState = {
 
 const initialState: ContactState = { success: false, demo: false };
 
-export default function ContactForm() {
+interface ContactPageContentProps {
+  email: string;
+  location?: string | null;
+}
+
+export function ContactPageContent({ email, location }: ContactPageContentProps) {
   const [state, formAction, pending] = useActionState(
     async (_prev: ContactState, formData: FormData): Promise<ContactState> => {
       const result = await submitContactForm(formData);
@@ -46,16 +51,18 @@ export default function ContactForm() {
               <Mail className="h-5 w-5 text-primary" aria-hidden />
               <h2 className="mt-3 font-semibold">Email</h2>
               <a
-                href="mailto:alex@example.com"
+                href={`mailto:${email}`}
                 className="mt-1 block text-muted-foreground hover:text-primary"
               >
-                alex@example.com
+                {email}
               </a>
             </div>
             <div className="glass rounded-2xl p-6">
               <MapPin className="h-5 w-5 text-primary" aria-hidden />
               <h2 className="mt-3 font-semibold">Location</h2>
-              <p className="mt-1 text-muted-foreground">San Francisco, CA — Remote friendly</p>
+              <p className="mt-1 text-muted-foreground">
+                {location ? `${location} — Remote friendly` : "Remote friendly"}
+              </p>
             </div>
           </div>
         </FadeIn>

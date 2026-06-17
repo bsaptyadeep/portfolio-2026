@@ -49,5 +49,6 @@ export async function updateProfile(formData: FormData): Promise<ActionResult<Pr
   revalidatePath("/dashboard/profile");
   revalidatePath("/");
   revalidatePath("/about");
+  revalidatePath("/contact");
   return { success: true, data };
 }
