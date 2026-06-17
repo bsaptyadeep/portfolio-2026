@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { fallbackBlogPosts } from "@/lib/data/seed";
 import { getRelatedPosts as scoreRelated } from "@/lib/blog/utils";
 import type { BlogPost } from "@/types/database";
 
@@ -11,9 +10,7 @@ function isSupabaseConfigured() {
 }
 
 export async function getBlogPostById(id: string): Promise<BlogPost | null> {
-  if (!isSupabaseConfigured()) {
-    return fallbackBlogPosts.find((p) => p.id === id) ?? null;
-  }
+  if (!isSupabaseConfigured()) return null;
 
   const supabase = await createClient();
   const { data } = await supabase.from("blog_posts").select("*").eq("id", id).single();

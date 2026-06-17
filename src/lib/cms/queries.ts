@@ -1,11 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createStaticClient } from "@/lib/supabase/static";
-import {
-  fallbackBlogPosts,
-  fallbackExperiences,
-  fallbackProfile,
-  fallbackProjects,
-} from "@/lib/data/seed";
+import { fallbackProfile } from "@/lib/data/seed";
 import type { BlogPost, Experience, Profile, Project } from "@/types/database";
 
 export { getExperienceTimeline } from "@/lib/cms/experience";
@@ -26,39 +21,27 @@ export async function getProfile(): Promise<Profile> {
 }
 
 export async function getExperiences(publishedOnly = true): Promise<Experience[]> {
-  if (!isSupabaseConfigured()) {
-    return publishedOnly
-      ? fallbackExperiences.filter((e) => e.published)
-      : fallbackExperiences;
-  }
+  if (!isSupabaseConfigured()) return [];
 
   const supabase = createStaticClient();
   let query = supabase.from("experiences").select("*").order("sort_order");
   if (publishedOnly) query = query.eq("published", true);
   const { data } = await query;
-  return data?.length ? data : publishedOnly
-    ? fallbackExperiences.filter((e) => e.published)
-    : fallbackExperiences;
+  return data ?? [];
 }
 
 export async function getProjects(publishedOnly = true): Promise<Project[]> {
-  if (!isSupabaseConfigured()) {
-    return publishedOnly
-      ? fallbackProjects.filter((p) => p.published)
-      : fallbackProjects;
-  }
+  if (!isSupabaseConfigured()) return [];
 
   const supabase = createStaticClient();
   let query = supabase.from("projects").select("*").order("sort_order");
   if (publishedOnly) query = query.eq("published", true);
   const { data } = await query;
-  return data?.length ? data : fallbackProjects;
+  return data ?? [];
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  if (!isSupabaseConfigured()) {
-    return fallbackProjects.find((p) => p.slug === slug) ?? null;
-  }
+  if (!isSupabaseConfigured()) return null;
 
   const supabase = createStaticClient();
   const { data } = await supabase
@@ -71,11 +54,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 }
 
 export async function getBlogPosts(publishedOnly = true): Promise<BlogPost[]> {
-  if (!isSupabaseConfigured()) {
-    return publishedOnly
-      ? fallbackBlogPosts.filter((p) => p.published)
-      : fallbackBlogPosts;
-  }
+  if (!isSupabaseConfigured()) return [];
 
   const supabase = createStaticClient();
   let query = supabase
@@ -84,13 +63,11 @@ export async function getBlogPosts(publishedOnly = true): Promise<BlogPost[]> {
     .order("published_at", { ascending: false });
   if (publishedOnly) query = query.eq("published", true);
   const { data } = await query;
-  return data?.length ? data : fallbackBlogPosts;
+  return data ?? [];
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  if (!isSupabaseConfigured()) {
-    return fallbackBlogPosts.find((p) => p.slug === slug) ?? null;
-  }
+  if (!isSupabaseConfigured()) return null;
 
   const supabase = createStaticClient();
   const { data } = await supabase
@@ -104,12 +81,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
 export async function getDashboardStats() {
   if (!isSupabaseConfigured()) {
-    return {
-      posts: fallbackBlogPosts.length,
-      projects: fallbackProjects.length,
-      experiences: fallbackExperiences.length,
-      messages: 0,
-    };
+    return { posts: 0, projects: 0, experiences: 0, messages: 0 };
   }
 
   const supabase = createStaticClient();

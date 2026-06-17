@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { toTimelineEntry } from "@/lib/experience/utils";
-import { fallbackExperiences } from "@/lib/data/seed";
 import type { ExperienceTimelineEntry } from "@/types/experience";
 
 function isSupabaseConfigured() {
@@ -19,12 +18,7 @@ export async function getExperienceTimeline(
 ): Promise<ExperienceTimelineEntry[]> {
   const { publishedOnly = true, limit } = options;
 
-  if (!isSupabaseConfigured()) {
-    const entries = fallbackExperiences
-      .filter((e) => (publishedOnly ? e.published : true))
-      .map(toTimelineEntry);
-    return limit ? entries.slice(0, limit) : entries;
-  }
+  if (!isSupabaseConfigured()) return [];
 
   const supabase = await createClient();
   let query = supabase
@@ -40,14 +34,7 @@ export async function getExperienceTimeline(
     query = query.limit(limit);
   }
 
-  const { data, error } = await query;
-
-  if (error || !data?.length) {
-    const entries = fallbackExperiences
-      .filter((e) => (publishedOnly ? e.published : true))
-      .map(toTimelineEntry);
-    return limit ? entries.slice(0, limit) : entries;
-  }
-
-  return data.map(toTimelineEntry);
+  const { data } = await query;
+  const entries = (data ?? []).map(toTimelineEntry);
+  return entries;
 }
