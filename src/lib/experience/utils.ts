@@ -24,7 +24,7 @@ export function toTimelineEntry(row: Experience): ExperienceTimelineEntry {
     role: row.role,
     location: row.location,
     start_date: row.start_date,
-    end_date: row.end_date,
+    end_date: row.current ? null : row.end_date,
     current: row.current,
     description: row.description,
     achievements: row.achievements ?? [],

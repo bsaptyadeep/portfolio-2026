@@ -111,7 +111,7 @@ export function TimelineItem({ entry, index, isLast }: TimelineItemProps) {
                   <p className="mt-0.5 font-medium text-primary">{entry.company_name}</p>
                 </div>
                 {entry.current && (
-                  <Badge className="shrink-0">Current</Badge>
+                  <Badge className="shrink-0">Present</Badge>
                 )}
               </div>
 

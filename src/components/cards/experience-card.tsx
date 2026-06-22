@@ -16,7 +16,10 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
       <CardHeader className="pl-8">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>{experience.role}</CardTitle>
+            <div className="flex flex-wrap items-center gap-2">
+              <CardTitle>{experience.role}</CardTitle>
+              {experience.current && <Badge>Present</Badge>}
+            </div>
             <p className="text-primary font-medium">{experience.company_name}</p>
           </div>
           <p className="text-sm text-muted-foreground">{duration}</p>

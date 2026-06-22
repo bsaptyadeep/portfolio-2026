@@ -17,6 +17,7 @@ import {
   deleteExperience,
   toggleExperiencePublished,
 } from "@/lib/actions/admin/experience";
+import { formatDuration } from "@/lib/experience/utils";
 import type { Experience } from "@/types/database";
 
 interface ExperienceManagerProps {
@@ -43,6 +44,97 @@ function reducer(items: Experience[], action: Action) {
   }
 }
 
+function ExperienceCreateForm({
+  isPending,
+  onCancel,
+  onSubmit,
+}: {
+  isPending: boolean;
+  onCancel: () => void;
+  onSubmit: (formData: FormData) => void;
+}) {
+  const [isCurrent, setIsCurrent] = useState(false);
+
+  return (
+    <form action={onSubmit} className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="company_name">Company</Label>
+          <Input id="company_name" name="company_name" required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="role">Role</Label>
+          <Input id="role" name="role" required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="location">Location</Label>
+          <Input id="location" name="location" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="company_logo">Logo URL</Label>
+          <Input id="company_logo" name="company_logo" type="url" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="start_date">Start Date</Label>
+          <Input id="start_date" name="start_date" type="date" required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="end_date">End Date</Label>
+          <Input
+            id="end_date"
+            name="end_date"
+            type="date"
+            disabled={isCurrent}
+            className={isCurrent ? "opacity-50" : undefined}
+          />
+          {isCurrent && (
+            <p className="text-xs text-muted-foreground">Disabled while present workplace is on.</p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 px-4 py-3">
+        <Switch
+          id="current"
+          checked={isCurrent}
+          label="Present workplace"
+          onCheckedChange={setIsCurrent}
+        />
+        <div>
+          <Label htmlFor="current" className="cursor-pointer">
+            Present workplace
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            I currently work here (shows as Present on your timeline)
+          </p>
+        </div>
+        <input type="hidden" name="current" value={String(isCurrent)} />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea id="description" name="description" rows={3} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="achievements">Achievements (one per line)</Label>
+        <Textarea id="achievements" name="achievements" rows={4} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="technologies">Technologies (comma-separated)</Label>
+        <Input id="technologies" name="technologies" placeholder="React, Node.js" />
+      </div>
+      <div className="flex gap-2">
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Saving..." : "Add Experience"}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+}
+
 export function ExperienceManager({ initialExperiences }: ExperienceManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +151,7 @@ export function ExperienceManager({ initialExperiences }: ExperienceManagerProps
         role: String(formData.get("role")),
         location: String(formData.get("location") || null),
         start_date: String(formData.get("start_date")),
-        end_date: null,
+        end_date: formData.get("current") === "true" ? null : String(formData.get("end_date") || null),
         current: formData.get("current") === "true",
         description: String(formData.get("description") || null),
         achievements: [],
@@ -98,55 +190,11 @@ export function ExperienceManager({ initialExperiences }: ExperienceManagerProps
             <CardTitle className="text-lg">New Experience</CardTitle>
           </CardHeader>
           <CardContent>
-            <form action={handleCreate} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="company_name">Company</Label>
-                  <Input id="company_name" name="company_name" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Input id="role" name="role" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input id="location" name="location" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="company_logo">Logo URL</Label>
-                  <Input id="company_logo" name="company_logo" type="url" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="start_date">Start Date</Label>
-                  <Input id="start_date" name="start_date" type="date" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="end_date">End Date</Label>
-                  <Input id="end_date" name="end_date" type="date" />
-                </div>
-              </div>
-              <input type="hidden" name="current" value="false" />
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" rows={3} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="achievements">Achievements (one per line)</Label>
-                <Textarea id="achievements" name="achievements" rows={4} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="technologies">Technologies (comma-separated)</Label>
-                <Input id="technologies" name="technologies" placeholder="React, Node.js" />
-              </div>
-              <div className="flex gap-2">
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? "Saving..." : "Add Experience"}
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </form>
+            <ExperienceCreateForm
+              isPending={isPending}
+              onCancel={() => setShowForm(false)}
+              onSubmit={handleCreate}
+            />
           </CardContent>
         </Card>
       )}
@@ -159,10 +207,18 @@ export function ExperienceManager({ initialExperiences }: ExperienceManagerProps
             <Card key={exp.id} className={exp.id.startsWith("temp-") ? "opacity-70" : ""}>
               <CardHeader className="flex flex-row items-start justify-between gap-4">
                 <div>
-                  <CardTitle className="text-lg">
-                    {exp.role} at {exp.company_name}
-                  </CardTitle>
-                  <p className="mt-1 text-sm text-muted-foreground">{exp.location}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-lg">
+                      {exp.role} at {exp.company_name}
+                    </CardTitle>
+                    {exp.current && (
+                      <Badge variant="default">Present</Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {formatDuration(exp)}
+                    {exp.location ? ` · ${exp.location}` : ""}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Switch
