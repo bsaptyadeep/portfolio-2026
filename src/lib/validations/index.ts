@@ -70,6 +70,29 @@ export const experienceSchema = z.object({
   sort_order: z.number().default(0),
 });
 
+export function parseExperienceFormData(formData: FormData) {
+  return {
+    company_name: formData.get("company_name"),
+    company_logo: formData.get("company_logo") || "",
+    role: formData.get("role"),
+    location: formData.get("location") || undefined,
+    start_date: formData.get("start_date"),
+    end_date: formData.get("end_date") || null,
+    current: formData.get("current") === "true",
+    description: formData.get("description") || undefined,
+    achievements: String(formData.get("achievements") ?? "")
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean),
+    technologies: String(formData.get("technologies") ?? "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+    published: formData.get("published") !== "false",
+    sort_order: Number(formData.get("sort_order") ?? 0),
+  };
+}
+
 export const profileSchema = z.object({
   full_name: z.string().min(2),
   headline: z.string().optional(),

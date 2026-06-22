@@ -4,9 +4,46 @@ import { revalidatePath } from "next/cache";
 import { assertAdmin } from "@/lib/actions/admin/guard";
 import { actionError } from "@/lib/auth/types";
 import { createClient } from "@/lib/supabase/server";
-import { experienceSchema } from "@/lib/validations";
+import { experienceSchema, parseExperienceFormData } from "@/lib/validations";
 import type { ActionResult } from "@/lib/auth/types";
 import type { Experience } from "@/types/database";
+
+function revalidateExperiencePaths() {
+  revalidatePath("/dashboard/experience");
+  revalidatePath("/experience");
+  revalidatePath("/");
+}
+
+function parseMetrics(formData: FormData): ActionResult<{ label: string; value: string }[]> | { success: true; data: { label: string; value: string }[] } {
+  const metricsRaw = formData.get("metrics");
+  if (!metricsRaw) return { success: true, data: [] };
+  try {
+    return { success: true, data: JSON.parse(String(metricsRaw)) };
+  } catch {
+    return actionError("Invalid metrics JSON");
+  }
+}
+
+function buildExperienceRow(
+  parsed: ReturnType<typeof experienceSchema.parse>,
+  metrics: { label: string; value: string }[]
+) {
+  return {
+    company_name: parsed.company_name,
+    company_logo: parsed.company_logo || null,
+    role: parsed.role,
+    location: parsed.location ?? null,
+    start_date: parsed.start_date,
+    end_date: parsed.current ? null : parsed.end_date ?? null,
+    current: parsed.current,
+    description: parsed.description ?? null,
+    achievements: parsed.achievements,
+    technologies: parsed.technologies,
+    metrics,
+    published: parsed.published,
+    sort_order: parsed.sort_order,
+  };
+}
 
 export async function createExperience(
   formData: FormData
@@ -14,67 +51,53 @@ export async function createExperience(
   const auth = await assertAdmin();
   if (!auth.success) return auth;
 
-  const parsed = experienceSchema.safeParse({
-    company_name: formData.get("company_name"),
-    company_logo: formData.get("company_logo") || "",
-    role: formData.get("role"),
-    location: formData.get("location") || undefined,
-    start_date: formData.get("start_date"),
-    end_date: formData.get("end_date") || null,
-    current: formData.get("current") === "true",
-    description: formData.get("description") || undefined,
-    achievements: String(formData.get("achievements") ?? "")
-      .split("\n")
-      .map((l) => l.trim())
-      .filter(Boolean),
-    technologies: String(formData.get("technologies") ?? "")
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean),
-    published: formData.get("published") !== "false",
-    sort_order: Number(formData.get("sort_order") ?? 0),
-  });
-
+  const parsed = experienceSchema.safeParse(parseExperienceFormData(formData));
   if (!parsed.success) {
     return actionError(parsed.error.issues[0]?.message ?? "Invalid input");
   }
 
-  const metricsRaw = formData.get("metrics");
-  let metrics: { label: string; value: string }[] = [];
-  if (metricsRaw) {
-    try {
-      metrics = JSON.parse(String(metricsRaw));
-    } catch {
-      return actionError("Invalid metrics JSON");
-    }
-  }
+  const metricsResult = parseMetrics(formData);
+  if (!metricsResult.success) return metricsResult;
 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("experiences")
-    .insert({
-      company_name: parsed.data.company_name,
-      company_logo: parsed.data.company_logo || null,
-      role: parsed.data.role,
-      location: parsed.data.location ?? null,
-      start_date: parsed.data.start_date,
-      end_date: parsed.data.current ? null : parsed.data.end_date ?? null,
-      current: parsed.data.current,
-      description: parsed.data.description ?? null,
-      achievements: parsed.data.achievements,
-      technologies: parsed.data.technologies,
-      metrics,
-      published: parsed.data.published,
-      sort_order: parsed.data.sort_order,
-    })
+    .insert(buildExperienceRow(parsed.data, metricsResult.data))
     .select()
     .single();
 
   if (error) return actionError(error.message);
 
-  revalidatePath("/dashboard/experience");
-  revalidatePath("/experience");
-  revalidatePath("/");
+  revalidateExperiencePaths();
+  return { success: true, data };
+}
+
+export async function updateExperience(
+  id: string,
+  formData: FormData
+): Promise<ActionResult<Experience>> {
+  const auth = await assertAdmin();
+  if (!auth.success) return auth;
+
+  const parsed = experienceSchema.safeParse(parseExperienceFormData(formData));
+  if (!parsed.success) {
+    return actionError(parsed.error.issues[0]?.message ?? "Invalid input");
+  }
+
+  const metricsResult = parseMetrics(formData);
+  if (!metricsResult.success) return metricsResult;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("experiences")
+    .update(buildExperienceRow(parsed.data, metricsResult.data))
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) return actionError(error.message);
+
+  revalidateExperiencePaths();
   return { success: true, data };
 }
 
@@ -90,9 +113,7 @@ export async function toggleExperiencePublished(
 
   if (error) return actionError(error.message);
 
-  revalidatePath("/dashboard/experience");
-  revalidatePath("/experience");
-  revalidatePath("/");
+  revalidateExperiencePaths();
   return { success: true, data: undefined };
 }
 
@@ -105,8 +126,6 @@ export async function deleteExperience(id: string): Promise<ActionResult> {
 
   if (error) return actionError(error.message);
 
-  revalidatePath("/dashboard/experience");
-  revalidatePath("/experience");
-  revalidatePath("/");
+  revalidateExperiencePaths();
   return { success: true, data: undefined };
 }

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { toTimelineEntry } from "@/lib/experience/utils";
+import type { Experience } from "@/types/database";
 import type { ExperienceTimelineEntry } from "@/types/experience";
 
 function isSupabaseConfigured() {
@@ -37,4 +38,12 @@ export async function getExperienceTimeline(
   const { data } = await query;
   const entries = (data ?? []).map(toTimelineEntry);
   return entries;
+}
+
+export async function getExperienceById(id: string): Promise<Experience | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  const supabase = await createClient();
+  const { data } = await supabase.from("experiences").select("*").eq("id", id).single();
+  return data;
 }
