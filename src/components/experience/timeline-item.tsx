@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Calendar, MapPin } from "lucide-react";
 import { CompanyLogo } from "@/components/experience/company-logo";
-import { ExperienceMarkdown } from "@/components/experience/experience-markdown";
+import { ExperienceDescription } from "@/components/experience/experience-description";
 import { MetricsGrid } from "@/components/experience/metrics-grid";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration, formatTenure } from "@/lib/experience/utils";
@@ -134,7 +134,7 @@ export function TimelineItem({ entry, index, isLast }: TimelineItemProps) {
 
           {entry.description && (
             <div className="mt-4">
-              <ExperienceMarkdown content={entry.description} />
+              <ExperienceDescription content={entry.description} entry={entry} />
             </div>
           )}
 

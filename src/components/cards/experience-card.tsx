@@ -1,4 +1,4 @@
-import { ExperienceMarkdown } from "@/components/experience/experience-markdown";
+import { ExperienceDescription } from "@/components/experience/experience-description";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDuration } from "@/lib/experience/utils";
@@ -32,7 +32,10 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
       <CardContent className="pl-8">
         {experience.description && (
           <div className="mb-4">
-            <ExperienceMarkdown content={experience.description} />
+            <ExperienceDescription
+              content={experience.description}
+              dialogTitle={`${experience.role} · ${experience.company_name}`}
+            />
           </div>
         )}
         {experience.achievements.length > 0 && (

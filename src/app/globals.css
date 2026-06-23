@@ -147,6 +147,13 @@ body {
   border: 1px solid var(--glass-border);
 }
 
+.site-nav-top {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+
 .gradient-mesh {
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--gradient-start) 30%, transparent), transparent),
