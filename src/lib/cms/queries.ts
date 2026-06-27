@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createStaticClient } from "@/lib/supabase/static";
 import { fallbackProfile } from "@/lib/data/seed";
+import { getProjectSlug, slugify } from "@/lib/utils";
 import type { BlogPost, Experience, Profile, Project } from "@/types/database";
 
 export { getExperienceTimeline } from "@/lib/cms/experience";
@@ -43,14 +44,25 @@ export async function getProjects(publishedOnly = true): Promise<Project[]> {
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   if (!isSupabaseConfigured()) return null;
 
+  const decoded = decodeURIComponent(slug);
+  const normalized = slugify(decoded);
+
   const supabase = createStaticClient();
-  const { data } = await supabase
+  const { data: projects } = await supabase
     .from("projects")
     .select("*")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
-  return data;
+    .eq("published", true);
+
+  if (!projects?.length) return null;
+
+  return (
+    projects.find(
+      (project) =>
+        project.slug === decoded ||
+        project.slug === normalized ||
+        getProjectSlug(project) === normalized
+    ) ?? null
+  );
 }
 
 export async function getBlogPosts(publishedOnly = true): Promise<BlogPost[]> {

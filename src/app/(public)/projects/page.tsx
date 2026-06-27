@@ -24,9 +24,7 @@ export default async function ProjectsPage() {
       <StaggerContainer className="mt-12 grid gap-6 sm:grid-cols-2">
         {projects.map((project) => (
           <StaggerItem key={project.id}>
-            <div id={project.slug}>
-              <ProjectCard project={project} featured={project.featured} />
-            </div>
+            <ProjectCard project={project} featured={project.featured} />
           </StaggerItem>
         ))}
       </StaggerContainer>

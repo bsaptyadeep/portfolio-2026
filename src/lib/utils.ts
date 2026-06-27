@@ -22,3 +22,7 @@ export function slugify(text: string) {
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+export function getProjectSlug(project: { slug: string; title: string }) {
+  return slugify(project.slug) || slugify(project.title);
+}

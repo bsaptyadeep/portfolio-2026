@@ -4,6 +4,7 @@ import { GitHubIcon } from "@/components/icons/social";
 import type { Project } from "@/types/database";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { getProjectSlug } from "@/lib/utils";
 
 interface ProjectCardProps {
   project: Project;
@@ -57,7 +58,7 @@ export function ProjectCard({ project, featured }: ProjectCardProps) {
           ))}
         </div>
         <Link
-          href={`/projects#${project.slug}`}
+          href={`/projects/${getProjectSlug(project)}`}
           className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
         >
           Learn more →

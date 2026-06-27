@@ -9,10 +9,11 @@ import type { ActionResult } from "@/lib/auth/types";
 import type { Project } from "@/types/database";
 import { slugify } from "@/lib/utils";
 
-function revalidateProjectPaths() {
+function revalidateProjectPaths(slug?: string) {
   revalidatePath("/dashboard/projects");
   revalidatePath("/projects");
   revalidatePath("/");
+  if (slug) revalidatePath(`/projects/${slug}`);
 }
 
 function buildProjectRow(parsed: ReturnType<typeof projectSchema.parse>) {
@@ -33,9 +34,10 @@ function buildProjectRow(parsed: ReturnType<typeof projectSchema.parse>) {
 
 function parseProjectInput(formData: FormData) {
   const raw = parseProjectFormData(formData);
+  const title = String(raw.title ?? "");
   return projectSchema.safeParse({
     ...raw,
-    slug: raw.slug || slugify(String(raw.title ?? "")),
+    slug: slugify(String(raw.slug || title)),
   });
 }
 
@@ -59,7 +61,7 @@ export async function createProject(
 
   if (error) return actionError(error.message);
 
-  revalidateProjectPaths();
+  revalidateProjectPaths(parsed.data.slug);
   return { success: true, data };
 }
 
@@ -85,7 +87,7 @@ export async function updateProject(
 
   if (error) return actionError(error.message);
 
-  revalidateProjectPaths();
+  revalidateProjectPaths(parsed.data.slug);
   return { success: true, data };
 }
 
