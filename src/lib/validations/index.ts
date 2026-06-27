@@ -52,6 +52,25 @@ export const projectSchema = z.object({
   sort_order: z.number().default(0),
 });
 
+export function parseProjectFormData(formData: FormData) {
+  return {
+    title: formData.get("title"),
+    slug: formData.get("slug") || undefined,
+    description: formData.get("description"),
+    long_description: formData.get("long_description") || undefined,
+    tech_stack: String(formData.get("tech_stack") ?? "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+    live_url: formData.get("live_url") || "",
+    repo_url: formData.get("repo_url") || "",
+    cover_image: formData.get("cover_image") || "",
+    featured: formData.get("featured") === "true",
+    published: formData.get("published") !== "false",
+    sort_order: Number(formData.get("sort_order") ?? 0),
+  };
+}
+
 export const experienceSchema = z.object({
   company_name: z.string().min(2),
   company_logo: z.string().url().optional().or(z.literal("")),

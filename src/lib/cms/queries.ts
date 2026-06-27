@@ -23,7 +23,7 @@ export async function getProfile(): Promise<Profile> {
 export async function getExperiences(publishedOnly = true): Promise<Experience[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const supabase = createStaticClient();
+  const supabase = publishedOnly ? createStaticClient() : await createClient();
   let query = supabase.from("experiences").select("*").order("sort_order");
   if (publishedOnly) query = query.eq("published", true);
   const { data } = await query;
@@ -33,7 +33,7 @@ export async function getExperiences(publishedOnly = true): Promise<Experience[]
 export async function getProjects(publishedOnly = true): Promise<Project[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const supabase = createStaticClient();
+  const supabase = publishedOnly ? createStaticClient() : await createClient();
   let query = supabase.from("projects").select("*").order("sort_order");
   if (publishedOnly) query = query.eq("published", true);
   const { data } = await query;
@@ -56,7 +56,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 export async function getBlogPosts(publishedOnly = true): Promise<BlogPost[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const supabase = createStaticClient();
+  const supabase = publishedOnly ? createStaticClient() : await createClient();
   let query = supabase
     .from("blog_posts")
     .select("*")

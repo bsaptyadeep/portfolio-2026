@@ -1,22 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useOptimistic, useState, useTransition } from "react";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { AlertBanner, ConfirmDeleteButton } from "@/components/dashboard/alert-banner";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { PageHeader } from "@/components/dashboard/page-header";
+import { ProjectForm } from "@/components/dashboard/project-form";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  createProject,
-  deleteProject,
-  toggleProjectPublished,
-} from "@/lib/actions/admin/projects";
+import { deleteProject, toggleProjectPublished } from "@/lib/actions/admin/projects";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/types/database";
 
 interface ProjectsManagerProps {
@@ -24,17 +20,14 @@ interface ProjectsManagerProps {
 }
 
 type Action =
-  | { type: "add"; item: Project }
   | { type: "delete"; id: string }
-  | { type: "toggle"; id: string; published: boolean };
+  | { type: "toggle-published"; id: string; published: boolean };
 
 function reducer(items: Project[], action: Action) {
   switch (action.type) {
-    case "add":
-      return [action.item, ...items];
     case "delete":
       return items.filter((i) => i.id !== action.id);
-    case "toggle":
+    case "toggle-published":
       return items.map((i) =>
         i.id === action.id ? { ...i, published: action.published } : i
       );
@@ -48,36 +41,6 @@ export function ProjectsManager({ initialProjects }: ProjectsManagerProps) {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [optimistic, update] = useOptimistic(initialProjects, reducer);
-
-  function handleCreate(formData: FormData) {
-    setError(null);
-    startTransition(async () => {
-      const temp: Project = {
-        id: `temp-${Date.now()}`,
-        title: String(formData.get("title")),
-        slug: String(formData.get("title")).toLowerCase().replace(/\s+/g, "-"),
-        description: String(formData.get("description")),
-        long_description: null,
-        tech_stack: [],
-        live_url: null,
-        repo_url: null,
-        cover_image: null,
-        featured: false,
-        sort_order: 0,
-        published: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      update({ type: "add", item: temp });
-
-      const result = await createProject(formData);
-      if (!result.success) {
-        setError(result.error);
-        return;
-      }
-      setShowForm(false);
-    });
-  }
 
   return (
     <div className={isPending ? "opacity-80 transition-opacity" : ""}>
@@ -96,44 +59,7 @@ export function ProjectsManager({ initialProjects }: ProjectsManagerProps) {
             <CardTitle className="text-lg">New Project</CardTitle>
           </CardHeader>
           <CardContent>
-            <form action={handleCreate} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Title</Label>
-                  <Input id="title" name="title" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="slug">Slug (optional)</Label>
-                  <Input id="slug" name="slug" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" required rows={3} />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="live_url">Live URL</Label>
-                  <Input id="live_url" name="live_url" type="url" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="repo_url">Repo URL</Label>
-                  <Input id="repo_url" name="repo_url" type="url" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tech_stack">Tech Stack (comma-separated)</Label>
-                <Input id="tech_stack" name="tech_stack" />
-              </div>
-              <div className="flex gap-2">
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? "Saving..." : "Add Project"}
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </form>
+            <ProjectForm onCancel={() => setShowForm(false)} />
           </CardContent>
         </Card>
       )}
@@ -148,20 +74,29 @@ export function ProjectsManager({ initialProjects }: ProjectsManagerProps) {
             <Card key={project.id} className={project.id.startsWith("temp-") ? "opacity-70" : ""}>
               <CardHeader className="flex flex-row items-start justify-between gap-4">
                 <CardTitle className="text-lg">{project.title}</CardTitle>
-                <div className="flex items-center gap-2">
-                  {project.featured && <Badge>Featured</Badge>}
+                <div className="flex shrink-0 items-center gap-2">
                   <Switch
                     checked={project.published}
-                    label={`Toggle ${project.title}`}
+                    label={`Toggle publish for ${project.title}`}
                     disabled={isPending || project.id.startsWith("temp-")}
                     onCheckedChange={(v) => {
                       startTransition(async () => {
-                        update({ type: "toggle", id: project.id, published: v });
+                        update({ type: "toggle-published", id: project.id, published: v });
                         const r = await toggleProjectPublished(project.id, v);
                         if (!r.success) setError(r.error);
                       });
                     }}
                   />
+                  <Badge variant={project.published ? "default" : "secondary"}>
+                    {project.published ? "Live" : "Draft"}
+                  </Badge>
+                  <Link
+                    href={`/dashboard/projects/${project.id}`}
+                    className={cn(buttonVariants({ variant: "outline", size: "icon" }))}
+                    aria-label={`Edit ${project.title}`}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Link>
                   <ConfirmDeleteButton
                     disabled={isPending || project.id.startsWith("temp-")}
                     onConfirm={() => {

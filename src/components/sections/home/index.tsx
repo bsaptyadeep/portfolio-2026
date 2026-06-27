@@ -26,7 +26,7 @@ export function HomePageContent({
   projects,
   posts,
 }: HomePageContentProps) {
-  const featuredProjects = projects.filter((p) => p.featured).slice(0, 2);
+  const featuredProjects = projects.slice(0, 2);
   const recentPosts = posts.slice(0, 3);
 
   return (

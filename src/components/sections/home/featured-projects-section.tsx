@@ -25,7 +25,7 @@ export function FeaturedProjectsSection({ projects }: FeaturedProjectsSectionPro
       <StaggerContainer className="grid gap-6 lg:grid-cols-2">
         {projects.map((project) => (
           <StaggerItem key={project.id}>
-            <ProjectCard project={project} featured={project.featured} />
+            <ProjectCard project={project} />
           </StaggerItem>
         ))}
       </StaggerContainer>
