@@ -1,5 +1,6 @@
 import { MapPin } from "lucide-react";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/motion/fade-in";
+import { ResumeSection } from "@/components/sections/resume-section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getProfile } from "@/lib/cms/queries";
@@ -32,6 +33,8 @@ export default async function AboutPage() {
           </p>
         </FadeIn>
       )}
+
+      {profile.resume_url && <ResumeSection resumeUrl={profile.resume_url} />}
 
       <section className="mt-16" aria-labelledby="skills-heading">
         <FadeIn>

@@ -15,6 +15,7 @@ interface HeroSectionProps {
   location?: string | null;
   avatarUrl?: string | null;
   resumeUrl?: string | null;
+  openToWork?: boolean;
 }
 
 export function HeroSection({
@@ -24,6 +25,7 @@ export function HeroSection({
   location,
   avatarUrl,
   resumeUrl,
+  openToWork = true,
 }: HeroSectionProps) {
   const firstName = getFirstName(name) || name;
 
@@ -38,18 +40,20 @@ export function HeroSection({
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_auto] lg:gap-16">
           {/* Copy — mobile-first: stacks above image */}
           <div className="order-2 lg:order-1">
-            <FadeIn>
-              <Badge variant="glass" className="mb-6 gap-1.5 px-3 py-1">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                <Sparkles className="h-3.5 w-3.5" aria-hidden />
-                Open to opportunities
-              </Badge>
-            </FadeIn>
+            {openToWork && (
+              <FadeIn>
+                <Badge variant="glass" className="mb-6 gap-1.5 px-3 py-1">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                  Open to opportunities
+                </Badge>
+              </FadeIn>
+            )}
 
-            <FadeIn delay={0.05}>
+            <FadeIn delay={openToWork ? 0.05 : 0}>
               <p className="text-sm font-medium text-muted-foreground sm:text-base">
                 Hi, I&apos;m {firstName} —
               </p>

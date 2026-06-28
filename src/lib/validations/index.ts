@@ -123,6 +123,7 @@ export const profileSchema = z.object({
   twitter: z.string().optional(),
   avatar_url: z.string().url().optional().or(z.literal("")),
   resume_url: z.string().url().optional().or(z.literal("")),
+  open_to_work: z.boolean().default(true),
 });
 
 export type ContactFormData = z.infer<typeof contactSchema>;

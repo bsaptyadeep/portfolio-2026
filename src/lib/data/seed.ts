@@ -8,6 +8,7 @@ export const fallbackProfile: Profile = {
   bio: "I build scalable, accessible web applications with a focus on developer experience and performance. Passionate about clean architecture, design systems, and shipping products that users love.",
   avatar_url: null,
   resume_url: null,
+  open_to_work: true,
   location: "San Francisco, CA",
   website: null,
   github: null,

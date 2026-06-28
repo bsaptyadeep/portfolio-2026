@@ -64,6 +64,7 @@ CREATE POLICY "public_read_blog_covers"
 -- -----------------------------------------------------------------------------
 
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS resume_url TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS open_to_work BOOLEAN NOT NULL DEFAULT TRUE;
 
 -- -----------------------------------------------------------------------------
 -- Storage — profile avatar & resume

@@ -105,6 +105,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult<Pr
     twitter: formData.get("twitter") || undefined,
     avatar_url: formData.get("avatar_url") || "",
     resume_url: formData.get("resume_url") || "",
+    open_to_work: formData.get("open_to_work") !== "false",
   });
 
   if (!parsed.success) {
@@ -125,6 +126,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult<Pr
       twitter: parsed.data.twitter ?? null,
       avatar_url: parsed.data.avatar_url || null,
       resume_url: parsed.data.resume_url || null,
+      open_to_work: parsed.data.open_to_work,
     })
     .eq("id", auth.data!.user.id)
     .select()

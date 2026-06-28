@@ -18,6 +18,7 @@ export interface Database {
           bio: string | null;
           avatar_url: string | null;
           resume_url: string | null;
+          open_to_work: boolean;
           location: string | null;
           website: string | null;
           github: string | null;
@@ -35,6 +36,7 @@ export interface Database {
           bio?: string | null;
           avatar_url?: string | null;
           resume_url?: string | null;
+          open_to_work?: boolean;
           location?: string | null;
           website?: string | null;
           github?: string | null;

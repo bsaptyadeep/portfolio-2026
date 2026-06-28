@@ -58,6 +58,7 @@ CREATE TABLE profiles (
   bio         TEXT,
   avatar_url  TEXT,
   resume_url  TEXT,
+  open_to_work BOOLEAN NOT NULL DEFAULT TRUE,
   location    TEXT,
   website     TEXT,
   github      TEXT,

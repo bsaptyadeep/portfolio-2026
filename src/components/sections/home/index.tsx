@@ -40,6 +40,7 @@ export function HomePageContent({
         location={profile.location}
         avatarUrl={profile.avatar_url}
         resumeUrl={profile.resume_url}
+        openToWork={profile.open_to_work ?? true}
       />
       <SkillsSection skills={capabilities} />
       <ExperienceTimelineSection experiences={experiences} limit={3} />

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   updateProfile,
@@ -36,6 +37,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   const [resumeName, setResumeName] = useState(
     profile.resume_url ? "Uploaded resume.pdf" : ""
   );
+  const [openToWork, setOpenToWork] = useState(profile.open_to_work ?? true);
 
   const displayName = getDisplayName(profile.full_name);
 
@@ -73,6 +75,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     setSuccess(false);
     formData.set("avatar_url", avatarUrl);
     formData.set("resume_url", resumeUrl);
+    formData.set("open_to_work", String(openToWork));
 
     startTransition(async () => {
       const result = await updateProfile(formData);
@@ -276,6 +279,22 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>
               <Textarea id="bio" name="bio" rows={5} defaultValue={profile.bio ?? ""} />
+            </div>
+            <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/30 px-4 py-3">
+              <Switch
+                id="open_to_work"
+                checked={openToWork}
+                label="Open to opportunities"
+                onCheckedChange={setOpenToWork}
+              />
+              <div>
+                <Label htmlFor="open_to_work" className="cursor-pointer">
+                  Open to opportunities
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Shows the availability badge on your homepage hero
+                </p>
+              </div>
             </div>
             <Button type="submit" disabled={isPending || isUploadingAvatar || isUploadingResume}>
               {isPending ? "Saving..." : "Save Profile"}
