@@ -60,6 +60,41 @@ CREATE POLICY "public_read_blog_covers"
   USING (bucket_id = 'blog-covers');
 
 -- -----------------------------------------------------------------------------
+-- profiles — resume URL for downloadable CV
+-- -----------------------------------------------------------------------------
+
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS resume_url TEXT;
+
+-- -----------------------------------------------------------------------------
+-- Storage — profile avatar & resume
+-- -----------------------------------------------------------------------------
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('profile-assets', 'profile-assets', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "admin_upload_profile_assets" ON storage.objects;
+DROP POLICY IF EXISTS "admin_update_profile_assets" ON storage.objects;
+DROP POLICY IF EXISTS "admin_delete_profile_assets" ON storage.objects;
+DROP POLICY IF EXISTS "public_read_profile_assets"  ON storage.objects;
+
+CREATE POLICY "admin_upload_profile_assets"
+  ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'profile-assets' AND public.is_admin());
+
+CREATE POLICY "admin_update_profile_assets"
+  ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'profile-assets' AND public.is_admin());
+
+CREATE POLICY "admin_delete_profile_assets"
+  ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'profile-assets' AND public.is_admin());
+
+CREATE POLICY "public_read_profile_assets"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'profile-assets');
+
+-- -----------------------------------------------------------------------------
 -- Auth signup fix (only if new users fail with "Database error creating user")
 -- -----------------------------------------------------------------------------
 

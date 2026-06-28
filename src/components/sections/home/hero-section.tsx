@@ -14,6 +14,7 @@ interface HeroSectionProps {
   tagline: string;
   location?: string | null;
   avatarUrl?: string | null;
+  resumeUrl?: string | null;
 }
 
 export function HeroSection({
@@ -22,6 +23,7 @@ export function HeroSection({
   tagline,
   location,
   avatarUrl,
+  resumeUrl,
 }: HeroSectionProps) {
   const firstName = getFirstName(name) || name;
 
@@ -95,17 +97,21 @@ export function HeroSection({
                 >
                   Let&apos;s Talk
                 </Link>
-                <a
-                  href="/resume.pdf"
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "lg" }),
-                    "w-full sm:w-auto"
-                  )}
-                  download
-                >
-                  <Download className="h-4 w-4" aria-hidden />
-                  Resume
-                </a>
+                {resumeUrl && (
+                  <a
+                    href={resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "lg" }),
+                      "w-full sm:w-auto"
+                    )}
+                    download
+                  >
+                    <Download className="h-4 w-4" aria-hidden />
+                    Resume
+                  </a>
+                )}
               </div>
             </FadeIn>
           </div>

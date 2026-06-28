@@ -121,6 +121,8 @@ export const profileSchema = z.object({
   github: z.string().optional(),
   linkedin: z.string().optional(),
   twitter: z.string().optional(),
+  avatar_url: z.string().url().optional().or(z.literal("")),
+  resume_url: z.string().url().optional().or(z.literal("")),
 });
 
 export type ContactFormData = z.infer<typeof contactSchema>;

@@ -39,6 +39,7 @@ export function HomePageContent({
         tagline={homeTagline}
         location={profile.location}
         avatarUrl={profile.avatar_url}
+        resumeUrl={profile.resume_url}
       />
       <SkillsSection skills={capabilities} />
       <ExperienceTimelineSection experiences={experiences} limit={3} />

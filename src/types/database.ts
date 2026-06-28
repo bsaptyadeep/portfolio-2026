@@ -17,6 +17,7 @@ export interface Database {
           headline: string | null;
           bio: string | null;
           avatar_url: string | null;
+          resume_url: string | null;
           location: string | null;
           website: string | null;
           github: string | null;
@@ -33,6 +34,7 @@ export interface Database {
           headline?: string | null;
           bio?: string | null;
           avatar_url?: string | null;
+          resume_url?: string | null;
           location?: string | null;
           website?: string | null;
           github?: string | null;

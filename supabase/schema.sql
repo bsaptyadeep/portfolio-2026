@@ -57,6 +57,7 @@ CREATE TABLE profiles (
   headline    TEXT,
   bio         TEXT,
   avatar_url  TEXT,
+  resume_url  TEXT,
   location    TEXT,
   website     TEXT,
   github      TEXT,
@@ -595,6 +596,30 @@ CREATE POLICY "admin_delete_blog_covers"
 CREATE POLICY "public_read_blog_covers"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'blog-covers');
+
+-- -----------------------------------------------------------------------------
+-- Storage: profile avatar & resume
+-- -----------------------------------------------------------------------------
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('profile-assets', 'profile-assets', true)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE POLICY "admin_upload_profile_assets"
+  ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'profile-assets' AND is_admin());
+
+CREATE POLICY "admin_update_profile_assets"
+  ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'profile-assets' AND is_admin());
+
+CREATE POLICY "admin_delete_profile_assets"
+  ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'profile-assets' AND is_admin());
+
+CREATE POLICY "public_read_profile_assets"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'profile-assets');
 
 -- -----------------------------------------------------------------------------
 -- Seed — default settings
