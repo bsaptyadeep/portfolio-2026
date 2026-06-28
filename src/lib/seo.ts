@@ -1,14 +1,35 @@
 import type { Metadata } from "next";
+import { fallbackProfile } from "@/lib/data/seed";
+import { getDisplayName } from "@/lib/utils";
+import type { Profile } from "@/types/database";
 
-const siteConfig = {
-  name: "Alex Morgan",
-  title: "Alex Morgan — Full Stack Engineer",
-  description:
-    "Full Stack Engineer crafting scalable, accessible web experiences with modern technologies.",
+const defaultDescription =
+  "Full Stack Engineer crafting scalable, accessible web experiences with modern technologies.";
+
+const baseSiteConfig = {
+  description: defaultDescription,
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ogImage: "/og-image.png",
-  twitter: "@alexmorgan",
 };
+
+export function buildSiteConfig(profile: Profile = fallbackProfile) {
+  const name = getDisplayName(profile.full_name);
+  const headline = profile.headline ?? "Full Stack Engineer";
+
+  return {
+    ...baseSiteConfig,
+    name,
+    title: `${name} — ${headline}`,
+    description: profile.bio?.trim() || defaultDescription,
+    twitter: profile.twitter
+      ? profile.twitter.startsWith("@")
+        ? profile.twitter
+        : `@${profile.twitter}`
+      : undefined,
+  };
+}
+
+export const siteConfig = buildSiteConfig(fallbackProfile);
 
 export function createMetadata({
   title,
@@ -16,28 +37,31 @@ export function createMetadata({
   path = "",
   image,
   noIndex = false,
+  profile,
 }: {
   title?: string;
   description?: string;
   path?: string;
   image?: string;
   noIndex?: boolean;
+  profile?: Profile;
 } = {}): Metadata {
-  const pageTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.title;
-  const pageDescription = description ?? siteConfig.description;
-  const url = `${siteConfig.url}${path}`;
-  const ogImage = image ?? siteConfig.ogImage;
+  const config = profile ? buildSiteConfig(profile) : siteConfig;
+  const pageTitle = title ? `${title} | ${config.name}` : config.title;
+  const pageDescription = description ?? config.description;
+  const url = `${config.url}${path}`;
+  const ogImage = image ?? config.ogImage;
 
   return {
     title: pageTitle,
     description: pageDescription,
-    metadataBase: new URL(siteConfig.url),
+    metadataBase: new URL(config.url),
     alternates: { canonical: url },
     openGraph: {
       title: pageTitle,
       description: pageDescription,
       url,
-      siteName: siteConfig.name,
+      siteName: config.name,
       images: [{ url: ogImage, width: 1200, height: 630, alt: pageTitle }],
       locale: "en_US",
       type: "website",
@@ -47,10 +71,8 @@ export function createMetadata({
       title: pageTitle,
       description: pageDescription,
       images: [ogImage],
-      creator: siteConfig.twitter,
+      ...(config.twitter ? { creator: config.twitter } : {}),
     },
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
   };
 }
-
-export { siteConfig };

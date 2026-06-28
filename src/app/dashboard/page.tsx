@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getDashboardStats } from "@/lib/cms/queries";
 import { requireAdmin } from "@/lib/auth/session";
 import { createMetadata } from "@/lib/seo";
+import { getFirstName } from "@/lib/utils";
 
 export const metadata = createMetadata({
   title: "Dashboard Overview",
@@ -48,7 +49,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-        Welcome back{session.profile.full_name ? `, ${session.profile.full_name.split(" ")[0]}` : ""}
+        Welcome back{session.profile.full_name ? `, ${getFirstName(session.profile.full_name)}` : ""}
       </h1>
       <p className="mt-2 text-muted-foreground">
         Manage your portfolio content from one secure admin panel.

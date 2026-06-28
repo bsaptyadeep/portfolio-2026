@@ -1,10 +1,16 @@
 import Link from "next/link";
-import { GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons/social";
+import { GitHubIcon, LinkedInIcon } from "@/components/icons/social";
 import { Separator } from "@/components/ui/separator";
 import { navLinks } from "@/lib/data/seed";
-import { siteConfig } from "@/lib/seo";
 
-export function Footer() {
+interface FooterProps {
+  siteName: string;
+  description: string;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+}
+
+export function Footer({ siteName, description, githubUrl, linkedinUrl }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -12,8 +18,8 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <p className="text-lg font-semibold">{siteConfig.name}</p>
-            <p className="mt-2 text-sm text-muted-foreground">{siteConfig.description}</p>
+            <p className="text-lg font-semibold">{siteName}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{description}</p>
           </div>
 
           <nav aria-label="Footer navigation">
@@ -35,33 +41,28 @@ export function Footer() {
           <div>
             <p className="mb-3 text-sm font-medium">Connect</p>
             <div className="flex gap-3">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub profile"
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <GitHubIcon />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn profile"
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <LinkedInIcon />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter profile"
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <XIcon />
-              </a>
+              {githubUrl && (
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub profile"
+                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  <GitHubIcon />
+                </a>
+              )}
+              {linkedinUrl && (
+                <a
+                  href={linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn profile"
+                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  <LinkedInIcon />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -69,7 +70,7 @@ export function Footer() {
         <Separator className="my-8" />
 
         <p className="text-center text-sm text-muted-foreground">
-          © {year} {siteConfig.name}. All rights reserved.
+          © {year} {siteName}. All rights reserved.
         </p>
       </div>
     </footer>

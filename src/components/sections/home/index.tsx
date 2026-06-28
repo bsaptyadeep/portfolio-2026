@@ -10,6 +10,7 @@ import {
   homeTagline,
   techStackCategories,
 } from "@/lib/data/seed";
+import { getDisplayName } from "@/lib/utils";
 import type { BlogPost, Profile, Project } from "@/types/database";
 import type { ExperienceTimelineEntry } from "@/types/experience";
 
@@ -28,11 +29,12 @@ export function HomePageContent({
 }: HomePageContentProps) {
   const featuredProjects = projects.slice(0, 2);
   const recentPosts = posts.slice(0, 3);
+  const displayName = getDisplayName(profile.full_name);
 
   return (
     <>
       <HeroSection
-        name={profile.full_name ?? "Alex Morgan"}
+        name={displayName}
         title={profile.headline ?? "Senior Full Stack Engineer"}
         tagline={homeTagline}
         location={profile.location}
@@ -44,7 +46,7 @@ export function HomePageContent({
       <RecentBlogsSection posts={recentPosts} />
       <TechStackSection categories={techStackCategories} />
       <ContactCTASection
-        name={profile.full_name ?? "Alex Morgan"}
+        name={displayName}
         email={profile.email}
       />
     </>

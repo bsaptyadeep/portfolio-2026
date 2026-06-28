@@ -1,11 +1,17 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/lib/seo";
+import { getProfile } from "@/lib/cms/queries";
+import { buildSiteConfig } from "@/lib/seo";
+import { getFirstName } from "@/lib/utils";
 
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const profile = await getProfile();
+  const config = buildSiteConfig(profile);
+  const shortName = getFirstName(profile.full_name) || config.name;
+
   return {
-    name: siteConfig.name,
-    short_name: siteConfig.name.split(" ")[0],
-    description: siteConfig.description,
+    name: config.name,
+    short_name: shortName,
+    description: config.description,
     start_url: "/",
     display: "standalone",
     background_color: "#030712",

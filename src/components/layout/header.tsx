@@ -8,12 +8,16 @@ import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { navLinks } from "@/lib/data/seed";
-import { siteConfig } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 const SCROLL_RANGE = 80;
 
-export function Header() {
+interface HeaderProps {
+  siteName: string;
+  firstName: string;
+}
+
+export function Header({ siteName, firstName }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const glassRef = useRef<HTMLDivElement>(null);
@@ -57,10 +61,10 @@ export function Header() {
           <Link
             href="/"
             className="text-lg font-semibold tracking-tight"
-            aria-label={`${siteConfig.name} home`}
+            aria-label={`${siteName} home`}
           >
             <span className="bg-gradient-to-r from-primary via-violet-500 to-cyan-500 bg-clip-text text-transparent">
-              {siteConfig.name.split(" ")[0]}
+              {firstName}
             </span>
           </Link>
 

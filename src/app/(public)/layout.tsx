@@ -1,11 +1,19 @@
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { getProfile } from "@/lib/cms/queries";
+import { buildSiteConfig } from "@/lib/seo";
+import { getDisplayName, getFirstName, toGitHubUrl, toLinkedInUrl } from "@/lib/utils";
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const profile = await getProfile();
+  const siteName = getDisplayName(profile.full_name);
+  const firstName = getFirstName(profile.full_name) || siteName;
+  const { description } = buildSiteConfig(profile);
+
   return (
     <div className="gradient-mesh flex min-h-dvh flex-col">
       <a
@@ -14,11 +22,16 @@ export default function PublicLayout({
       >
         Skip to main content
       </a>
-      <Header />
+      <Header siteName={siteName} firstName={firstName} />
       <main id="main-content" className="flex-1">
         {children}
       </main>
-      <Footer />
+      <Footer
+        siteName={siteName}
+        description={description}
+        githubUrl={toGitHubUrl(profile.github)}
+        linkedinUrl={toLinkedInUrl(profile.linkedin)}
+      />
     </div>
   );
 }

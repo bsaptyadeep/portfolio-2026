@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/motion/fade-in";
 import { ProfileAvatar } from "@/components/sections/home/profile-avatar";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 
 interface HeroSectionProps {
   name: string;
@@ -23,7 +23,7 @@ export function HeroSection({
   location,
   avatarUrl,
 }: HeroSectionProps) {
-  const firstName = name.split(" ")[0];
+  const firstName = getFirstName(name) || name;
 
   return (
     <section className="relative overflow-hidden pt-8 pb-20 sm:pt-12 sm:pb-28 lg:pb-32">

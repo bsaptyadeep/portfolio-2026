@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
-import { siteConfig } from "@/lib/seo";
 import { ArrowLeft, Lock } from "lucide-react";
 
-export default function LoginForm() {
+interface LoginFormProps {
+  siteName: string;
+}
+
+export default function LoginForm({ siteName }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") ?? "/dashboard";
@@ -86,7 +89,7 @@ export default function LoginForm() {
           </div>
           <div>
             <h1 className="text-xl font-bold">Sign In</h1>
-            <p className="text-sm text-muted-foreground">{siteConfig.name} CMS</p>
+            <p className="text-sm text-muted-foreground">{siteName} CMS</p>
           </div>
         </div>
 

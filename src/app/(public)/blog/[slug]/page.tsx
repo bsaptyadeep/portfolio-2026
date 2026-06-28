@@ -9,10 +9,10 @@ import { FadeIn } from "@/components/motion/fade-in";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { extractTableOfContents } from "@/lib/blog/utils";
-import { getBlogPostBySlug, getBlogPosts } from "@/lib/cms/queries";
+import { getBlogPostBySlug, getBlogPosts, getProfile } from "@/lib/cms/queries";
 import { getRelatedBlogPosts } from "@/lib/cms/blog";
 import { createMetadata } from "@/lib/seo";
-import { cn, formatDate } from "@/lib/utils";
+import { cn, formatDate, getDisplayName } from "@/lib/utils";
 import { ArrowLeft, Clock } from "lucide-react";
 
 interface BlogPostPageProps {
@@ -26,8 +26,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
-  if (!post) return createMetadata({ title: "Post Not Found", noIndex: true });
+  const [post, profile] = await Promise.all([getBlogPostBySlug(slug), getProfile()]);
+  if (!post) return createMetadata({ title: "Post Not Found", noIndex: true, profile });
 
   const title = post.meta_title ?? post.title;
   const description = post.meta_description ?? post.excerpt ?? undefined;
@@ -38,6 +38,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     description,
     path: `/blog/${post.slug}`,
     image,
+    profile,
   });
 
   return {
@@ -54,8 +55,10 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const [post, profile] = await Promise.all([getBlogPostBySlug(slug), getProfile()]);
   if (!post) notFound();
+
+  const authorName = getDisplayName(profile.full_name);
 
   const [relatedPosts, headings] = await Promise.all([
     getRelatedBlogPosts(post),
@@ -64,7 +67,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
-      <ArticleJsonLd post={post} />
+      <ArticleJsonLd post={post} authorName={authorName} />
 
       <article className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
         <FadeIn>

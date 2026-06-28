@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { getProfile } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
 import "./globals.css";
 
@@ -17,7 +18,10 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = createMetadata();
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getProfile();
+  return createMetadata({ profile });
+}
 
 export default function RootLayout({
   children,

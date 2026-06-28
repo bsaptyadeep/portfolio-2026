@@ -5,7 +5,7 @@ import { ArrowRight, Mail } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { SectionShell } from "@/components/sections/section-shell";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 
 interface ContactCTASectionProps {
   name: string;
@@ -13,7 +13,7 @@ interface ContactCTASectionProps {
 }
 
 export function ContactCTASection({ name, email }: ContactCTASectionProps) {
-  const firstName = name.split(" ")[0];
+  const firstName = getFirstName(name) || name;
 
   return (
     <SectionShell id="contact" variant="muted" ariaLabelledBy="contact-heading">

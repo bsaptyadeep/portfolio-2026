@@ -19,8 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/actions/auth";
 import { dashboardLinks } from "@/lib/data/seed";
-import { siteConfig } from "@/lib/seo";
-import { cn } from "@/lib/utils";
+import { cn, getFirstName } from "@/lib/utils";
 
 const iconMap = {
   LayoutDashboard,
@@ -44,7 +43,7 @@ export function DashboardSidebar({
   return (
     <>
       <div className="flex h-16 items-center justify-between border-b border-border/50 px-4 lg:hidden">
-        <span className="font-semibold">{siteConfig.name}</span>
+        <span className="font-semibold">{getFirstName(userName) || "CMS"}</span>
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button

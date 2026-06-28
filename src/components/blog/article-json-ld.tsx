@@ -3,9 +3,10 @@ import { siteConfig } from "@/lib/seo";
 
 interface ArticleJsonLdProps {
   post: BlogPost;
+  authorName: string;
 }
 
-export function ArticleJsonLd({ post }: ArticleJsonLdProps) {
+export function ArticleJsonLd({ post, authorName }: ArticleJsonLdProps) {
   const url = `${siteConfig.url}/blog/${post.slug}`;
   const image = post.og_image ?? post.cover_image ?? `${siteConfig.url}${siteConfig.ogImage}`;
 
@@ -19,11 +20,11 @@ export function ArticleJsonLd({ post }: ArticleJsonLdProps) {
     dateModified: post.updated_at,
     author: {
       "@type": "Person",
-      name: siteConfig.name,
+      name: authorName,
     },
     publisher: {
       "@type": "Organization",
-      name: siteConfig.name,
+      name: authorName,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
